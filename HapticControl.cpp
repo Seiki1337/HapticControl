@@ -268,7 +268,7 @@ void sendData(SOCKET udpSocket, sockaddr_in& otherAddr, HHD hHD) {
     std::vector<float> lastdp;
 
     while (true) {
-        if (_kbhit() && _getch() == 'q' || GlobalBtn == 0x03) {
+        if (_kbhit() && _getch() == 'q') {
             std::cout << "Send thread quitting..." << std::endl;
             break;
         }
