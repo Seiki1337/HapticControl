@@ -56,6 +56,7 @@ std::vector<float> GlobalSlaveAng(3);
 std::vector<float> GlobalSlaveForce(3);
 std::vector<float> GlobalSlavePlane(3);// = {-1.0, 0.0, 0.0};
 std::atomic<int> ContactFlag;
+std::atomic<int> OperationMode(0);
 std::mutex recv_mutex, send_mutex;
 
 //for callback
@@ -272,6 +273,11 @@ void sendData(SOCKET udpSocket, sockaddr_in& otherAddr, HHD hHD) {
             std::cout << "Send thread quitting..." << std::endl;
             break;
         }
+        if (_getch() == "l"){
+            OperationMode = 0;
+        }else if (_getch() == "b"){
+            OperationMode = 1;
+        }
 
         {
             std::lock_guard<std::mutex> lock(send_mutex);
@@ -320,6 +326,7 @@ void sendData(SOCKET udpSocket, sockaddr_in& otherAddr, HHD hHD) {
         dy = 0.001 * dy;
         dz = 0.001 * dz;
         LastiBtnState = iBtnState;
+        iBtnState = iBtnState + OperationMode * 10;
         sendStruct SendStruct = { iBtnState, {dx, dy, dz, LocalAng[0], LocalAng[1], LocalAng[2]} };
 
         int sendResult = sendto(udpSocket, reinterpret_cast<char*>(&SendStruct), sizeof(SendStruct), 0, (sockaddr*)&otherAddr, sizeof(otherAddr));
