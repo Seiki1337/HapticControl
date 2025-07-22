@@ -1,5 +1,5 @@
 # HapticControl
 
-mkdir build
-cmake ..
+mkdir build\\
+cmake ..\\
 cmake --build .
